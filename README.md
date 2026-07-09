@@ -1,20 +1,20 @@
 # Retrieval-Augmented Generation
 
-A local Streamlit application for asking questions over PDF, DOCX, and TXT documents with hybrid retrieval, reranking, citations, and an Ollama-backed language model.
+Une application Streamlit locale pour poser des questions à des documents PDF, DOCX et TXT avec recherche hybride, reranking, citations et génération via Ollama.
 
-The project is intentionally built as a readable RAG pipeline rather than a black-box demo. Each stage is separated into a small module so the retrieval flow can be inspected, tuned, and extended.
+Le projet est construit comme un pipeline RAG lisible plutôt que comme une démonstration opaque. Chaque étape est séparée dans un module dédié afin de pouvoir inspecter, régler et faire évoluer le système de recherche.
 
-## What it does
+## Fonctionnalités
 
-- Upload one or more documents from the browser.
-- Extract text from PDF, DOCX, and TXT files.
-- Split documents into overlapping chunks.
-- Build a vector index with sentence-transformer embeddings and FAISS.
-- Build a lexical BM25 index over the same chunks.
-- Fuse vector and BM25 results with Reciprocal Rank Fusion.
-- Rerank candidates with a cross-encoder.
-- Generate an answer with a local Ollama model.
-- Return citations and expose a diagnostic view of retrieved/reranked chunks.
+- Importer un ou plusieurs documents depuis le navigateur.
+- Extraire le texte de fichiers PDF, DOCX et TXT.
+- Découper les documents en chunks avec recouvrement.
+- Construire un index vectoriel avec des embeddings Sentence Transformers et FAISS.
+- Construire un index lexical BM25 sur les mêmes chunks.
+- Fusionner les résultats vectoriels et BM25 avec Reciprocal Rank Fusion.
+- Réordonner les candidats avec un cross-encoder.
+- Générer une réponse avec un modèle Ollama local.
+- Retourner les citations et afficher un diagnostic des chunks retrouvés puis rerankés.
 
 ## Architecture
 
@@ -27,10 +27,10 @@ Documents
   -> reranker.py
   -> prompting.py
   -> generator.py
-  -> Streamlit chat UI
+  -> interface Streamlit
 ```
 
-The app keeps the retrieval layer transparent: after each answer, the Streamlit UI can show the chunks used, their sources, and their fusion/rerank scores.
+L'application garde la couche de recherche transparente : après chaque réponse, l'interface Streamlit peut afficher les chunks utilisés, leurs sources, leurs scores de fusion et leurs scores de reranking.
 
 ## Stack
 
@@ -44,32 +44,32 @@ The app keeps the retrieval layer transparent: after each answer, the Streamlit 
 - pypdf
 - python-docx
 
-## Repository Structure
+## Structure du dépôt
 
 ```text
 .
-├── app.py                 # Streamlit interface
+├── app.py                 # Interface Streamlit
 ├── rag/
-│   ├── bm25.py            # Lexical retrieval
-│   ├── chunking.py        # Chunk generation
-│   ├── config.py          # Runtime settings
-│   ├── embeddings.py      # Embedding and reranker loading
-│   ├── generator.py       # Ollama generation client
-│   ├── loaders.py         # PDF/DOCX/TXT parsing
-│   ├── memory.py          # Short chat history formatting
-│   ├── pipeline.py        # End-to-end RAG flow
-│   ├── prompting.py       # Prompt and citation context
-│   ├── reranker.py        # Cross-encoder reranking
-│   ├── retriever.py       # Hybrid retrieval and fusion
-│   ├── schemas.py         # Shared data structures
-│   └── vector_store.py    # FAISS vector search
+│   ├── bm25.py            # Recherche lexicale
+│   ├── chunking.py        # Découpage des documents
+│   ├── config.py          # Paramètres d'exécution
+│   ├── embeddings.py      # Chargement embeddings et reranker
+│   ├── generator.py       # Client de génération Ollama
+│   ├── loaders.py         # Parsing PDF/DOCX/TXT
+│   ├── memory.py          # Formatage court de l'historique
+│   ├── pipeline.py        # Pipeline RAG complet
+│   ├── prompting.py       # Prompt et contexte cité
+│   ├── reranker.py        # Reranking cross-encoder
+│   ├── retriever.py       # Recherche hybride et fusion
+│   ├── schemas.py         # Structures de données partagées
+│   └── vector_store.py    # Recherche vectorielle FAISS
 ├── utils/
 └── requirements.txt
 ```
 
-## Getting Started
+## Installation
 
-Install Python dependencies:
+Installer les dépendances Python :
 
 ```bash
 python -m venv .venv
@@ -77,42 +77,42 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Install and start Ollama, then pull the default model:
+Installer et lancer Ollama, puis récupérer le modèle par défaut :
 
 ```bash
 ollama pull phi3
 ollama serve
 ```
 
-Run the app:
+Lancer l'application :
 
 ```bash
 streamlit run app.py
 ```
 
-Open the local Streamlit URL, upload documents, and ask questions about their content.
+Ouvrir l'URL locale Streamlit, importer des documents, puis poser des questions sur leur contenu.
 
 ## Configuration
 
-Default settings live in `rag/config.py`:
+Les paramètres par défaut sont dans `rag/config.py` :
 
-- embedding model: `sentence-transformers/all-MiniLM-L6-v2`
-- reranker model: `cross-encoder/ms-marco-MiniLM-L-6-v2`
-- Ollama model: `phi3`
-- chunk size: `900`
-- chunk overlap: `150`
-- retrieval top-k values for vector, BM25, fusion, and reranking
+- modèle d'embedding : `sentence-transformers/all-MiniLM-L6-v2`
+- modèle de reranking : `cross-encoder/ms-marco-MiniLM-L-6-v2`
+- modèle Ollama : `phi3`
+- taille des chunks : `900`
+- recouvrement des chunks : `150`
+- valeurs top-k pour la recherche vectorielle, BM25, la fusion et le reranking
 
-The Streamlit sidebar exposes the main retrieval parameters at runtime.
+La barre latérale Streamlit expose les principaux paramètres de recherche au moment de l'exécution.
 
 ## Notes
 
-This is a local-first RAG prototype. It is useful for understanding and testing the retrieval pipeline, but it does not include production concerns such as authentication, persistent multi-user indexes, background ingestion, or observability.
+Ce projet est un prototype RAG local-first. Il est utile pour comprendre et tester le pipeline de recherche, mais il n'inclut pas encore les préoccupations de production comme l'authentification, les index persistants multi-utilisateurs, l'ingestion en arrière-plan ou l'observabilité.
 
-## Roadmap
+## Prochaines améliorations
 
-- Add example documents and screenshots.
-- Add automated tests for chunking, retrieval, and citation formatting.
-- Persist indexes between sessions.
-- Add evaluation examples for retrieval quality.
-- Add streaming responses from Ollama.
+- Ajouter des documents d'exemple et des captures d'écran.
+- Ajouter des tests automatisés pour le découpage, la recherche et le formatage des citations.
+- Persister les index entre les sessions.
+- Ajouter des exemples d'évaluation de la qualité de recherche.
+- Ajouter le streaming des réponses Ollama.
