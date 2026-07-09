@@ -11,6 +11,7 @@ Le projet est construit comme un pipeline RAG lisible plutôt que comme une dém
 - Découper les documents en chunks avec recouvrement.
 - Construire un index vectoriel avec des embeddings Sentence Transformers et FAISS.
 - Construire un index lexical BM25 sur les mêmes chunks.
+- Garder l'index en session Streamlit tant que les documents importés ne changent pas.
 - Fusionner les résultats vectoriels et BM25 avec Reciprocal Rank Fusion.
 - Réordonner les candidats avec un cross-encoder.
 - Générer une réponse avec un modèle Ollama local.
@@ -104,6 +105,8 @@ Les paramètres par défaut sont dans `rag/config.py` :
 - valeurs top-k pour la recherche vectorielle, BM25, la fusion et le reranking
 
 La barre latérale Streamlit expose les principaux paramètres de recherche au moment de l'exécution.
+
+L'index des documents est conservé dans la session Streamlit et n'est reconstruit que lorsque la liste ou le contenu des fichiers importés change. Cela évite de relancer l'embedding complet à chaque interaction avec le chat.
 
 ## Notes
 
