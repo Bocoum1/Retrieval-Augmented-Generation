@@ -108,6 +108,3 @@ La barre latérale Streamlit expose les principaux paramètres de recherche au m
 ## Notes
 
 Ce projet est un prototype RAG local-first. Il est utile pour comprendre et tester le pipeline de recherche , mais il n'inclut pas encore les préoccupations de production comme l'authentification, les index persistants multi-utilisateurs, l'ingestion en arrière-plan ou l'observabilité.
-
-- Ajouter des documents d'exemple et des captures d'écran.
-- Ajouter des tests automatisés pour le découpage, la recherche et le
